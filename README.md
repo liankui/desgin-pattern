@@ -1,1 +1,1 @@
-# desgin-pattern
+# Design pattern in golang.
