@@ -27,7 +27,7 @@ func getInstance() *single {
 		defer lock.Unlock()
 		// 另一个nil singleInstance检查，为了确保多个goroutine绕过第一次检查，只有一个goroutine能够创建单实例。
 		if singleInstance == nil {
-			fmt.Println("Creting Single Instance Now")
+			fmt.Println("Creating Single Instance Now")
 			singleInstance = &single{}
 		} else {
 			fmt.Println("Single Instance already created-1")
@@ -40,7 +40,7 @@ func getInstance() *single {
 
 func main() {
 	for i := 0; i < 100; i++ {
-		go getInstance2()
+		go getInstance()
 	}
 	// Scanln类似于Scan，但是在换行符处停止扫描，并且在最终项目之后必须有一个换行符或EOF。
 	fmt.Scanln()
