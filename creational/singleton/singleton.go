@@ -11,12 +11,12 @@ https://golangbyexample.com/singleton-design-pattern-go/
 DB实例-我们只想创建DB对象的一个实例，并且该实例将在整个应用程序中使用。
 记录器实例-同样，应该只创建记录器的一个实例，并且应该在整个应用程序中使用它。
 */
-var lock = &sync.Mutex{}
 
 type single struct{}
 
 // 全局实例
 var singleInstance *single
+var lock = &sync.Mutex{}
 
 // 创建实例
 func getInstance() *single {
@@ -72,3 +72,18 @@ func getInstance2() *single {
 有一个 “立即创建单个实例” 的输出，这意味着只有一个goroutine能够创建单个实例
 有几个输出 “单个实例已经创建-2”，这意味着当他们到达单个实例时，单个实例已经创建，并且如果检查，他们无法绕过第一个
 */
+
+var engines map[string]func() Engine
+var enginesOnce sync.Once
+
+func RegisterEngine(name string, engine func() Engine) {
+	enginesOnce.Do(func() {
+		engines = make(map[string]func() Engine)
+	})
+	engines[name] = engine
+}
+
+type Engine interface {
+	// Name get the name of the engine
+	Name() string
+}
