@@ -1,4 +1,8 @@
-package command
+package main
+
+import (
+	"fmt"
+)
 
 /* https://golangbyexample.com/command-design-pattern-in-golang/
 命令设计模式是一种行为设计模式。它建议将请求封装为独立对象。创建的对象具有有关请求的所有信息，因此可以独立执行它。
@@ -17,11 +21,6 @@ package command
 	命令是嵌入电视的ON命令对象
 	Invoker是电视上的遥控器ON按钮或ON按钮。都嵌入ON命令对象
 请注意，我们已经将打开电视的请求包装为可以由多个invokers调用的on command对象。此ON command对象嵌入了接收器 (此处为TV)，并且可以独立执行。
-作为另一个例子，想象一个Adobe Photoshop应用程序的情况。在Photoshop中，可以从3个地方触发保存操作
-	从菜单上。
-	从上条上的按钮。
-	使用快捷方式Ctrl S。
-所有三个触发点都做同样的事情，即将当前图像保存在应用程序中。可以将此保存包装到保存命令对象中，并在应用程序中打开当前映像作为接收器。
 
 在上面的例子中创建一个单独的命令对象有什么好处。
 1.它将UI逻辑与底层业务逻辑解耦
@@ -32,3 +31,69 @@ package command
 type command interface {
 	execute()
 }
+
+type button struct {
+	command command
+}
+
+func (b *button) press() {
+	b.command.execute()
+}
+
+type device interface {
+	on()
+	off()
+}
+
+type tv struct {
+	isRunning bool
+}
+
+func (t *tv) on() {
+	t.isRunning = true
+	fmt.Println("Turning tv on")
+}
+
+func (t *tv) off() {
+	t.isRunning = false
+	fmt.Println("Turning tv off")
+}
+
+type offCommand struct {
+	device device
+}
+
+func (c *offCommand) execute() {
+	c.device.off()
+}
+
+type onCommand struct {
+	device device
+}
+
+func (c *onCommand) execute() {
+	c.device.on()
+}
+
+func main() {
+	tv := &tv{}
+	onCommand := &onCommand{
+		device: tv,
+	}
+	offCommand := &offCommand{
+		device: tv,
+	}
+	onButton := &button{
+		command: onCommand,
+	}
+	onButton.press()
+	offButton := &button{
+		command: offCommand,
+	}
+	offButton.press()
+}
+
+/*
+Turning tv on
+Turning tv off
+*/

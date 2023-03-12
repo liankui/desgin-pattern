@@ -25,7 +25,6 @@ func TestPrototype(t *testing.T) {
 }
 
 /*
-
 Printing hierarchy for Folder2
   Folder2
     Folder1

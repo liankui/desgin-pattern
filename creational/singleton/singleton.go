@@ -73,6 +73,11 @@ func getInstance2() *single {
 有几个输出 “单个实例已经创建-2”，这意味着当他们到达单个实例时，单个实例已经创建，并且如果检查，他们无法绕过第一个
 */
 
+type Engine interface {
+	// Name get the name of the engine
+	Name() string
+}
+
 var engines map[string]func() Engine
 var enginesOnce sync.Once
 
@@ -81,9 +86,4 @@ func RegisterEngine(name string, engine func() Engine) {
 		engines = make(map[string]func() Engine)
 	})
 	engines[name] = engine
-}
-
-type Engine interface {
-	// Name get the name of the engine
-	Name() string
 }
