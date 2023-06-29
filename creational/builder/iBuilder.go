@@ -4,10 +4,8 @@ import (
 	"fmt"
 )
 
-/* 构建器模式 https://golangbyexample.com/builder-pattern-golang/
-当构建的对象很大并且需要多个步骤时，可以使用构建器模式，它有助于减少构造函数的大小。
-
-demo
+/* https://golangbyexample.com/builder-pattern-golang/
+构建器模式，当构建的对象很大并且需要多个步骤时，可以使用构建器模式，它有助于减少构造函数的大小。
 在下面的代码中，不同版本的house由iglooBuilder和normalBuilder建造
 */
 

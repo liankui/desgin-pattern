@@ -4,8 +4,10 @@ import (
 	"fmt"
 )
 
-/* 原型模式 https://golangbyexample.com/prototype-pattern-go/
-这是一种创造性的设计模式，可让您创建对象的副本。
+/*
+	https://golangbyexample.com/prototype-pattern-go/
+
+原型模式是一种创造性的设计模式，可让您创建对象的副本。
 在此模式中，创建克隆对象的责任被委派给要克隆的实际对象。
 要克隆的对象公开了一个克隆方法，该方法返回该对象的克隆副本。
 
@@ -15,6 +17,7 @@ import (
 3.当您想要创建一个新对象的副本时，但它仅作为接口提供给您。因此，您不能直接创建该对象的副本。
 
 demo：
+
 	os文件系统有文件和文件夹，文件夹本身包含文件和文件夹。
 	每个文件和文件夹都可以用inode接口表示。inode接口也有clone()函数。
 */

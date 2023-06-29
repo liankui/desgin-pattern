@@ -4,8 +4,10 @@ import (
 	"fmt"
 )
 
-/* 工厂设计模式 https://golangbyexample.com/golang-factory-design-pattern/
-是一种创造性的设计模式，此模式提供了一种隐藏正在创建的实例的创建逻辑的方法。
+/*
+	https://golangbyexample.com/golang-factory-design-pattern/
+
+工厂设计模式是一种创造性的设计模式，此模式提供了一种隐藏正在创建的实例的创建逻辑的方法。
 客户端仅与工厂结构交互，并告诉需要创建的实例类型。工厂类与相应的具体结构交互，并返回正确的实例。
 
 我们有iGun接口，它定义了枪支应该拥有的所有方法:

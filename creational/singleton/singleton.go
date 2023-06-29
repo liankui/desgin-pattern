@@ -5,8 +5,8 @@ import (
 	"sync"
 )
 
-/* 单例模式 https://golangbyexample.com/singleton-design-pattern-go/
-适用于：
+/* https://golangbyexample.com/singleton-design-pattern-go/
+单例模式适用于：
 	1. DB实例-我们只想创建DB对象的一个实例，并且该实例将在整个应用程序中使用。
 */
 
