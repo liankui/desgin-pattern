@@ -1,49 +1,52 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
+	"sync"
 )
 
 // https://golangbyexample.com/stack-in-golang/
 
 type customStack struct {
-	stack *list.List
+	stack []string
+	lock  sync.RWMutex
 }
 
 func (c *customStack) Push(value string) {
-	c.stack.PushFront(value)
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	c.stack = append(c.stack, value)
 }
 
 func (c *customStack) Pop() error {
-	if c.stack.Len() > 0 {
-		element := c.stack.Front()
-		c.stack.Remove(element)
+	if len(c.stack) > 0 {
+		c.lock.Lock()
+		defer c.lock.Unlock()
+		c.stack = c.stack[:len(c.stack)-1]
 	}
 	return fmt.Errorf("pop error: Stack is empty")
 }
 
 // Front 相当于查看栈顶元素（Peek）
 func (c *customStack) Front() (string, error) {
-	if c.stack.Len() > 0 {
-		if val, ok := c.stack.Front().Value.(string); ok {
-			return val, nil
-		}
-		return "", fmt.Errorf("peek error: Stack Datatype is incorrent")
+	if len(c.stack) > 0 {
+		c.lock.Lock()
+		defer c.lock.Unlock()
+		return c.stack[len(c.stack)-1], nil
 	}
 	return "", fmt.Errorf("peep Error: Stack is empty")
 }
 
 func (c *customStack) Size() int {
-	return c.stack.Len()
+	return len(c.stack)
 }
 
 func (c *customStack) Empty() bool {
-	return c.stack.Len() == 0
+	return len(c.stack) == 0
 }
 
 func main() {
-	cs := &customStack{stack: list.New()}
+	cs := &customStack{stack: []string{}}
 	fmt.Printf("push: %s\n", "A")
 	cs.Push("A")
 	fmt.Printf("push: %s\n", "B")
@@ -57,7 +60,7 @@ func main() {
 	}
 }
 
-/* Output：
+/* Output:
 push: A
 push: B
 size: 2
@@ -65,5 +68,4 @@ front: B and pop: B
 size: 1
 front: A and pop: A
 size: 0
-
 */

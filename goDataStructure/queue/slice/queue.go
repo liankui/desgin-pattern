@@ -50,6 +50,7 @@ func main() {
 	cq := &customQueue{queue: make([]string, 0)}
 	cq.Enqueue("A")
 	cq.Enqueue("B")
+	cq.Enqueue("C")
 	fmt.Printf("size: %d\n", cq.Size())
 	for cq.Size() > 0 {
 		front, _ := cq.Front()
