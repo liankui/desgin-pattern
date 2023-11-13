@@ -1,1 +1,1 @@
-# Design pattern in golang.
+# Design patterns in golang.
