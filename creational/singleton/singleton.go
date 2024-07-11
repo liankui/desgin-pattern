@@ -38,7 +38,8 @@ func getInstance() *single {
 
 func main() {
 	for i := 0; i < 100; i++ {
-		go getInstance2()
+		go getInstance()
+		// go getInstance2()
 	}
 
 	fmt.Scanln() // Scanln类似于Scan，但是在换行符处停止扫描，并且在最终项目之后必须有一个换行符或EOF。
@@ -55,7 +56,7 @@ var once sync.Once
 
 func getInstance2() *single {
 	once.Do(func() {
-		fmt.Println("Creting Single Instance Now")
+		fmt.Println("Creating Single Instance Now")
 		singleInstance = new(single)
 	})
 	return singleInstance
