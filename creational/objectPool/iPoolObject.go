@@ -7,23 +7,17 @@ import (
 	"sync"
 )
 
-/*
-	https://golangbyexample.com/golang-object-pool/
+/* https://golangbyexample.com/golang-object-pool/
+对象池模式（Object Pool Pattern）是一种用于管理和重用一组预先分配的对象的设计模式。通过对象池，程序可以避免频繁地创建和销毁对象，从而提升性能，尤其是在对象创建和销毁开销较大的情况下。
 
-对象池设计模式是一种创造性的设计模式，其中预先初始化和创建对象池，并将其保存在池中。
-根据需要，客户端可以从池中请求对象，使用它并将其返回到池中。池中的物体从未被摧毁。
+使用场景
+1.	数据库连接池：管理数据库连接，减少连接创建和销毁的开销。
+2.	线程池：管理线程，避免频繁创建和销毁线程带来的开销。
+3.	缓存对象：比如大对象或者频繁使用的对象，避免每次都重新创建。
+4.	网络连接池：如 HTTP 客户端连接池，提升网络请求性能。
 
-何时使用:
-1.当创建类对象的成本很高，并且在特定时间需要的此类对象的数量不多时。
-
-	-以DB连接为例。每个连接对象的创建成本都很高，因为涉及网络调用，并且一次可能不需要超过某个连接。对象池设计模式非常适合这种情况。
-
-2.当池对象是不可变对象时
-
-	-以DB连接为例。DB连接是一个不可变的对象。几乎没有任何财产需要更改
-
-3.出于性能原因。由于已经创建了池，因此它将显着提高应用程序的性能
 */
+
 type iPoolObject interface {
 	getID() string // 这是可用于比较两个不同池对象的任何id
 }
@@ -62,12 +56,15 @@ func initPool(poolObjects []iPoolObject) (*pool, error) {
 func (p *pool) loan() (iPoolObject, error) {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+
 	if len(p.idle) == 0 {
 		return nil, fmt.Errorf("no pool object free, please request after sometime")
 	}
+
 	obj := p.idle[0]
 	p.idle = p.idle[1:]
 	p.active = append(p.active, obj)
+
 	fmt.Printf("Loan Pool Object with ID: %s\n", obj.getID())
 	return obj, nil
 }
@@ -76,10 +73,13 @@ func (p *pool) loan() (iPoolObject, error) {
 func (p *pool) receive(target iPoolObject) error {
 	p.mu.Lock()
 	defer p.mu.Unlock()
+
 	if err := p.remove(target); err != nil {
 		return err
 	}
+
 	p.idle = append(p.idle, target)
+
 	fmt.Printf("Return Pool Object with ID: %s\n", target.getID())
 	return nil
 }
