@@ -5,140 +5,56 @@ import (
 )
 
 /* https://golangbyexample.com/builder-pattern-golang/
-构建器模式，当构建的对象很大并且需要多个步骤时，可以使用构建器模式，它有助于减少构造函数的大小。
-在下面的代码中，不同版本的house由iglooBuilder和normalBuilder建造
+构建器模式是创造型的设计模式。
+功能
+1.逐步构建一个复杂对象。
+2.将对象的构建过程与表现形式分离。
+3.相同的构建过程能够创建对象的不同表现形式。
 */
 
-type iBuilder interface {
-	setWindowType()
-	setDoorType()
-	setNumFloor()
-	getHouse() house
+type Product struct {
+	PartA string
+	PartB string
 }
 
-func getBuilder(builderType string) (iBuilder, error) {
-	switch builderType {
-	case "normal":
-		return &normalBuilder{}, nil
-	case "igloo":
-		return &iglooBuilder{}, nil
-	default:
-		return nil, fmt.Errorf("wrong build type passed")
-	}
+type Builder interface {
+	BuildPartA()
+	BuildPartB()
+	GetProduct() Product
 }
 
-type iglooBuilder struct {
-	windowType string
-	doorType   string
-	floor      int
+type ConcreteBuilder struct {
+	product Product
 }
 
-func newIglooBuilder() *iglooBuilder {
-	return &iglooBuilder{}
+func (c *ConcreteBuilder) BuildPartA() {
+	c.product.PartA = "partA"
 }
 
-func (b *iglooBuilder) setWindowType() {
-	b.windowType = "Snow Window"
+func (c *ConcreteBuilder) BuildPartB() {
+	c.product.PartB = "partB"
 }
 
-func (b *iglooBuilder) setDoorType() {
-	b.doorType = "Snow Door"
+func (c *ConcreteBuilder) GetProduct() Product {
+	return c.product
 }
 
-func (b *iglooBuilder) setNumFloor() {
-	b.floor = 1
+type Director struct {
+	builder Builder
 }
 
-func (b *iglooBuilder) getHouse() house {
-	return house{
-		doorType:   b.doorType,
-		windowType: b.windowType,
-		floor:      b.floor,
-	}
-}
-
-type normalBuilder struct {
-	windowType string
-	doorType   string
-	floor      int
-}
-
-func newNormalBuilder() *normalBuilder {
-	return &normalBuilder{}
-}
-
-func (b *normalBuilder) setWindowType() {
-	b.windowType = "Wooden Window"
-}
-
-func (b *normalBuilder) setDoorType() {
-	b.doorType = "Wooden Door"
-}
-
-func (b *normalBuilder) setNumFloor() {
-	b.floor = 2
-}
-
-func (b *normalBuilder) getHouse() house {
-	return house{
-		doorType:   b.doorType,
-		windowType: b.windowType,
-		floor:      b.floor,
-	}
-}
-
-type house struct {
-	windowType string
-	doorType   string
-	floor      int
-}
-
-type director struct {
-	builder iBuilder
-}
-
-func newDirector(b iBuilder) *director {
-	return &director{
-		builder: b,
-	}
-}
-
-func (d *director) setBuilder(b iBuilder) {
-	d.builder = b
-}
-
-func (d *director) buildHouse() house {
-	d.builder.setDoorType()
-	d.builder.setWindowType()
-	d.builder.setNumFloor()
-	return d.builder.getHouse()
+func (d *Director) Construct() {
+	d.builder.BuildPartA()
+	d.builder.BuildPartB()
 }
 
 func main() {
-	normalBuilder, _ := getBuilder("normal")
-	iglooBuilder, _ := getBuilder("igloo")
+	builder := &ConcreteBuilder{}
+	director := &Director{builder: builder}
 
-	director := newDirector(normalBuilder)
-	normalHouse := director.buildHouse()
-
-	fmt.Printf("Normal House Door Type: %s\n", normalHouse.doorType)
-	fmt.Printf("Normal House Window Type: %s\n", normalHouse.windowType)
-	fmt.Printf("Normal House Num Floor: %d\n", normalHouse.floor)
-
-	director.setBuilder(iglooBuilder)
-	iglooHouse := director.buildHouse()
-
-	fmt.Printf("\nIgloo House Door Type: %s\n", iglooHouse.doorType)
-	fmt.Printf("Igloo House Window Type: %s\n", iglooHouse.windowType)
-	fmt.Printf("Igloo House Num Floor: %d\n", iglooHouse.floor)
+	director.Construct()
+	prod := builder.GetProduct()
+	fmt.Println(prod)
+	// output:
+	// {partA partB}
 }
-
-/*
-Normal House Door Type: Wooden Door
-Normal House Window Type: Wooden Window
-Normal House Num Floor: 2
-
-Igloo House Door Type: Snow Door
-Igloo House Window Type: Snow Window
-Igloo House Num Floor: 1
-*/
